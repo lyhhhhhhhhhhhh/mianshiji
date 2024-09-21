@@ -5,6 +5,8 @@ spring:
   application:
     name: mianshiji-next-backend
   # 默认 dev 环境
+  # main:
+    # allow-circular-references: true
   profiles:
     active: dev
   # 支持 swagger3
@@ -21,7 +23,7 @@ spring:
   # todo 需替换配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://115.159.72.56:3306/mianshiji
+    url: jdbc:mysql://115.159.72.56:3306/mainshiji
     username: root
     password: liyuhang
   # Redis 配置
