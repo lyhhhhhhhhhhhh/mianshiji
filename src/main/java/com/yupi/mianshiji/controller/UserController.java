@@ -317,4 +317,20 @@ public class UserController {
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return ResultUtils.success(true);
     }
+
+    @PostMapping("/add/sign_in")
+    public BaseResponse<Boolean> addSignIn(HttpServletRequest request) {
+        //必须要登录才能签到
+        User loginUser = userService.getLoginUser(request);
+        boolean result = userService.addUserSignIn(loginUser.getId());
+        return ResultUtils.success(result);
+    }
+
+    @GetMapping("/get/sign_in")
+    public BaseResponse<List<Integer>> getSignInRecord(Integer year, HttpServletRequest request) {
+        //必须登录获取签到记录
+        User loginUser = userService.getLoginUser(request);
+        List<Integer> userSignRecord = userService.getUserSignRecord(loginUser.getId(), year);
+        return ResultUtils.success(userSignRecord);
+    }
 }

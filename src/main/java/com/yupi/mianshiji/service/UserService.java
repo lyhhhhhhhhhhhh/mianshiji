@@ -6,6 +6,7 @@ import com.yupi.mianshiji.model.dto.user.UserQueryRequest;
 import com.yupi.mianshiji.model.entity.User;
 import com.yupi.mianshiji.model.vo.LoginUserVO;
 import com.yupi.mianshiji.model.vo.UserVO;
+
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
@@ -16,7 +17,9 @@ import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
  * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
  * @from <a href="https://yupi.icu">编程导航知识星球</a>
  */
-public interface UserService extends IService<User> {
+public interface
+
+UserService extends IService<User> {
 
     /**
      * 用户注册
@@ -118,4 +121,19 @@ public interface UserService extends IService<User> {
      */
     QueryWrapper<User> getQueryWrapper(UserQueryRequest userQueryRequest);
 
+    /**
+     * 添加用户签到记录
+     * @param userId 用户id
+     * @return 当前用户是否以已签到成功
+     */
+    Boolean addUserSignIn(long userId);
+
+    /**
+     * 获取用户某个年份的签到记录
+     *
+     * @param userId
+     * @param year
+     * @return
+     */
+    List<Integer> getUserSignRecord(long userId, Integer year);
 }
