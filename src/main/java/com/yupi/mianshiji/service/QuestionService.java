@@ -9,6 +9,7 @@ import com.yupi.mianshiji.model.entity.Question;
 import com.yupi.mianshiji.model.vo.QuestionVO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 题目服务
@@ -53,4 +54,10 @@ public interface QuestionService extends IService<Question> {
     Page<QuestionVO> getQuestionVOPage(Page<Question> questionPage, HttpServletRequest request);
 
     Page<Question> listQuestionByPage(QuestionQueryRequest questionQueryRequest);
+
+    /**
+     * 批量删除题目
+     * @param questionList
+     */
+    void batchDeleteQuestion(List<Long> questionList);
 }

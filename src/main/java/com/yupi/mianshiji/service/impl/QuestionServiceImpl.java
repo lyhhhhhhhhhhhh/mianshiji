@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -225,6 +226,26 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         // 查询数据库
         Page<Question> questionPage = this.page(new Page<>(current, size), queryWrapper);
         return questionPage;
+    }
+
+    /**
+     * 批量删除题目
+     * @param questionList
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void batchDeleteQuestion(List<Long> questionList) {
+        ThrowUtils.throwIf(questionList == null, ErrorCode.PARAMS_ERROR,"要删除的题目列表不能为空");
+        for (long questionId : questionList){
+            boolean result = this.removeById(questionId);
+            ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR,"删除题目失败");
+            //移除题目与题库的关联关系
+            //构造查询
+            LambdaQueryWrapper<QuestionBankQuestion> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(QuestionBankQuestion :: getQuestionId, questionId);
+            result = questionBankQuestionService.remove(queryWrapper);
+            ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR,"删除题目从题库中移除失败");
+        }
     }
 
 }
