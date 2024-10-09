@@ -9,7 +9,4 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
  * @Description:
  */
 public interface QuestionEsDao extends ElasticsearchRepository<QuestionEsDTO,Long> {
-
-
-
 }

@@ -49,8 +49,8 @@ import java.util.stream.Collectors;
 /**
  * 题库服务实现
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://www.code-nav.cn">编程导航学习圈</a>
+
+
  */
 @Service
 @Slf4j
@@ -219,15 +219,21 @@ public class QuestionBankQuestionServiceImpl extends ServiceImpl<QuestionBankQue
                 .in(Question::getId, questionIdList);
         //合法的题目ID
         List<Long> validQuestionIdList = questionService.listObjs(questionLambdaQueryWrapper, obj -> (long) obj);
+        ThrowUtils.throwIf(validQuestionIdList == null, ErrorCode.NOT_FOUND_ERROR, "合法的题目列表为空");
         //检查哪些题目还不存在于题库当中，避免重复插入
         LambdaQueryWrapper<QuestionBankQuestion> lambdaQueryWrapper = Wrappers.lambdaQuery(QuestionBankQuestion.class)
                 .eq(QuestionBankQuestion::getQuestionId, questionBankId)
-                .notIn(QuestionBankQuestion::getQuestionId, validQuestionIdList);
-        List<QuestionBankQuestion> notExitQuestionList = this.list(lambdaQueryWrapper);
-        validQuestionIdList = notExitQuestionList.stream()
+                .in(QuestionBankQuestion::getQuestionId, validQuestionIdList);
+        List<QuestionBankQuestion> exitQuestionList = this.list(lambdaQueryWrapper);
+        //已经存在于题库中的题目ID
+        Set<Long> existQuestionIdSet = exitQuestionList.stream()
                 .map(QuestionBankQuestion::getId)
-                .collect(Collectors.toList());
-        ThrowUtils.throwIf(validQuestionIdList == null, ErrorCode.NOT_FOUND_ERROR, "合法的题目列表为空");
+                .collect(Collectors.toSet());
+        //已经存在于题库的题目id 不需要再一次添加
+        validQuestionIdList = validQuestionIdList.stream().filter(questionId -> {
+            return !existQuestionIdSet.contains(questionId);
+        }).collect(Collectors.toList());
+        ThrowUtils.throwIf(CollUtil.isEmpty(validQuestionIdList), ErrorCode.PARAMS_ERROR,"所有题目都已存在于题库当中");
         //检查题库id是否存在
         QuestionBank questionBank = questionBankService.getById(questionBankId);
         ThrowUtils.throwIf(questionBank == null, ErrorCode.NOT_FOUND_ERROR, "题库不存在");
