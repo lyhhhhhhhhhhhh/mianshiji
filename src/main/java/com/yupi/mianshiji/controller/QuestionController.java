@@ -2,6 +2,13 @@ package com.yupi.mianshiji.controller;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
+import com.alibaba.csp.sentinel.Entry;
+import com.alibaba.csp.sentinel.EntryType;
+import com.alibaba.csp.sentinel.SphU;
+import com.alibaba.csp.sentinel.Tracer;
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeException;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -18,10 +25,12 @@ import com.yupi.mianshiji.model.dto.question.QuestionAddRequest;
 import com.yupi.mianshiji.model.dto.question.QuestionEditRequest;
 import com.yupi.mianshiji.model.dto.question.QuestionQueryRequest;
 import com.yupi.mianshiji.model.dto.question.QuestionUpdateRequest;
+import com.yupi.mianshiji.model.dto.questionBank.QuestionBankQueryRequest;
 import com.yupi.mianshiji.model.dto.questionBankQuestion.QuestionBankQuestionRemoveRequest;
 import com.yupi.mianshiji.model.entity.Question;
 import com.yupi.mianshiji.model.entity.QuestionBankQuestion;
 import com.yupi.mianshiji.model.entity.User;
+import com.yupi.mianshiji.model.vo.QuestionBankVO;
 import com.yupi.mianshiji.model.vo.QuestionVO;
 import com.yupi.mianshiji.service.QuestionBankQuestionService;
 import com.yupi.mianshiji.service.QuestionBankService;
@@ -200,6 +209,54 @@ public class QuestionController {
                 questionService.getQueryWrapper(questionQueryRequest));
         // 获取封装类
         return ResultUtils.success(questionService.getQuestionVOPage(questionPage, request));
+    }
+
+    /**
+     * 分页获取题目列表（封装类 - 限流版）
+     *
+     * @param questionQueryRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/list/page/vo/sentinel")
+    public BaseResponse<Page<QuestionVO>> listQuestionVOByPageSentinel(@RequestBody QuestionQueryRequest questionQueryRequest,
+                                                               HttpServletRequest request) {
+        long current = questionQueryRequest.getCurrent();
+        long size = questionQueryRequest.getPageSize();
+        // 限制爬虫
+        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
+        // 基于 IP 限流
+        String remoteAddr = request.getRemoteAddr();
+        Entry entry = null;
+        try  {
+            entry = SphU.entry("listQuestionVOByPage", EntryType.IN, 1, remoteAddr);
+            // 被保护的业务逻辑
+            // 查询数据库
+            Page<Question> questionPage = questionService.listQuestionByPage(questionQueryRequest);
+            // 获取封装类
+            return ResultUtils.success(questionService.getQuestionVOPage(questionPage, request));
+        } catch (BlockException ex) {
+            // 资源访问阻止，被限流或被降级
+            if (ex instanceof DegradeException) {
+                return handleFallback(questionQueryRequest, request, ex);
+            }
+            // 限流操作
+            return ResultUtils.error(ErrorCode.SYSTEM_ERROR, "访问过于频繁，请稍后再试");
+        } finally {
+            if (entry != null) {
+                entry.exit(1, remoteAddr);
+            }
+        }
+
+    }
+
+    /**
+     * listQuestionBankVOByPage 降级操作：直接返回本地数据
+     */
+    public BaseResponse<Page<QuestionVO>> handleFallback(@RequestBody QuestionQueryRequest questionBankQueryRequest,
+                                                             HttpServletRequest request, Throwable ex) {
+        // 可以返回本地数据或空数据
+        return ResultUtils.success(null);
     }
 
     /**
