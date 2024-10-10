@@ -1,4 +1,12 @@
 # 公共配置文件
+sa-token:
+  token-name: mianshiji
+  active-timeout: -1
+  timeout: 2592000
+  is-concurrent: false
+  is-share: true
+  token-style: uuid
+  is-log: true
 nacos:
   config:
     server-addr: 192.168.31.35:8848

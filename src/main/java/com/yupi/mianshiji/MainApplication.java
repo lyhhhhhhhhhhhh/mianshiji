@@ -21,9 +21,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
 @ServletComponentScan
 public class MainApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(MainApplication.class, args);
     }
-
 }
