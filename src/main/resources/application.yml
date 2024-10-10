@@ -1,4 +1,13 @@
 # 公共配置文件
+nacos:
+  config:
+    server-addr: 192.168.31.35:8848
+    bootstrap:
+      enable: true
+    data-id: mianshiji
+    group: DEFAULT_GROUP
+    type: yaml
+    auto-refresh: true
 spring:
   application:
     name: mianshiji-next-backend
