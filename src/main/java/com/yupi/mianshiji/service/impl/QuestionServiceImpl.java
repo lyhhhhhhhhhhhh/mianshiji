@@ -1,5 +1,6 @@
 package com.yupi.mianshiji.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -12,7 +13,9 @@ import com.yupi.mianshiji.common.ErrorCode;
 import com.yupi.mianshiji.common.ResultUtils;
 import com.yupi.mianshiji.constant.CommonConstant;
 import com.yupi.mianshiji.constant.UserConstant;
+import com.yupi.mianshiji.exception.BusinessException;
 import com.yupi.mianshiji.exception.ThrowUtils;
+import com.yupi.mianshiji.manager.CounterManager;
 import com.yupi.mianshiji.mapper.QuestionMapper;
 import com.yupi.mianshiji.model.dto.question.QuestionEsDTO;
 import com.yupi.mianshiji.model.dto.question.QuestionQueryRequest;
@@ -47,6 +50,7 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**

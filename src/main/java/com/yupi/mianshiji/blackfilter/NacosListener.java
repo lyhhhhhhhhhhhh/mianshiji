@@ -16,7 +16,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
-@Component
+//@Component
 public class NacosListener implements InitializingBean {
 
     @NacosInjected

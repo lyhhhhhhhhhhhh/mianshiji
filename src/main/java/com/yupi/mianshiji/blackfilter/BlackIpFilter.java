@@ -15,7 +15,7 @@ import java.io.IOException;
  * @time 2024-10-10-17:19
  **/
 
-@WebFilter(urlPatterns = "/*", filterName = "blackIpFilter")
+//@WebFilter(urlPatterns = "/*", filterName = "blackIpFilter")
 public class BlackIpFilter implements Filter {
 
     @Override

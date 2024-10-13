@@ -7,15 +7,15 @@ sa-token:
   is-share: true
   token-style: uuid
   is-log: true
-nacos:
-  config:
-    server-addr: 192.168.31.35:8848
-    bootstrap:
-      enable: true
-    data-id: mianshiji
-    group: DEFAULT_GROUP
-    type: yaml
-    auto-refresh: true
+#nacos:
+#  config:
+#    server-addr: 192.168.31.35:8848
+#    bootstrap:
+#      enable: true
+#    data-id: mianshiji
+#    group: DEFAULT_GROUP
+#    type: yaml
+#    auto-refresh: true
 spring:
   application:
     name: mianshiji-next-backend
@@ -110,10 +110,6 @@ spring:
         login-password: 123
         allow: 127.0.0.1 # 允许访问的地址，如果allow没有配置或者为空，则允许所有访问
         deny: # 拒绝访问的地址，deny优先于allow，如果在deny列表中，就算在allow列表中，也会被拒绝
-
-
-
-
   # todo 需替换配置，然后取消注释
   redis:
    database: 1
@@ -199,3 +195,6 @@ knife4j:
         api-rule: package
         api-rule-resources:
           - com.yupi.mianshiji.controller
+  basic:
+    username: root
+    password: liyuhang
