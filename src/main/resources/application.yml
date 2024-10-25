@@ -39,7 +39,7 @@ spring:
   # 数据源配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://115.159.72.56:3306/mainshiji
+    url: jdbc:mysql://124.222.136.26:3306/mainshiji
     username: root
     password: liyuhang
     # 指定数据源类型
@@ -113,7 +113,7 @@ spring:
   # todo 需替换配置，然后取消注释
   redis:
    database: 1
-   host: 115.159.72.56
+   host: 124.222.136.26
    port: 6379
    timeout: 5000
    password: liyuhang
@@ -153,7 +153,7 @@ hotkey:
   app-name: mianshiji
   caffeine-size: 10000
   push-period: 1000
-  etcd-server: http://115.159.72.56:2379
+  etcd-server: http://124.222.136.26:2379
 
 # 微信相关
 wx:
